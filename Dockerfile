@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM java:8
 
 ADD target/LoginService-0.0.1-SNAPSHOT.jar /LoginService.jar
 
