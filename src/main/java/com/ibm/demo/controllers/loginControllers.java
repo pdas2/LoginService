@@ -2,6 +2,7 @@ package com.ibm.demo.controllers;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
+import org.springframework.core.env.Environment;
 import com.ibm.demo.model.Account;
 import com.ibm.demo.model.offerService;
 import com.ibm.demo.producer.Producer;
@@ -28,6 +29,7 @@ import com.ibm.demo.repository.AccountSearchRepository;
 import com.ibm.demo.repository.offerMongoRepository;
 import com.ibm.demo.repository.offerMongoRepository;
 import com.ibm.demo.repository.AccountRepository;
+import com.ibm.demo.properties.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,13 @@ public class loginControllers {
 	public String userAccId;
 	public String userPhone;
 	
+	@Value("${OrderService.URL}")
+	private String OrderUrl;
+	
+	@Value("${OrderService.PORT}")
+	private String OrderPort;
+	
+	
 	@Autowired
 	AccountSearchRepository accountSearchRepository;
 	
@@ -53,12 +62,31 @@ public class loginControllers {
 	@Autowired
 	Producer producer;
 	
+    @Autowired
+    private Environment environment;
+    
+    /*
+    @Autowired
+    private OrderProperties orderProperties;
+	*/
+    
 	@RequestMapping("/home")
 	public String home1(Model model) {
 		
+		//System.out.println("URL="+"test");
 		 model.addAttribute("userName", userName);
 		 model.addAttribute("userAccId", userAccId);
 		 model.addAttribute("userPhone", userPhone);
+		 
+		 //System.out.println("URL="+url);
+		 
+		// Fetching Order Service URL : PORT from application.properties
+		 //model.addAttribute("orderServiceURL", environment.getProperty("OrderService.URL"));
+		 //model.addAttribute("orderServicePORT", environment.getProperty("OrderService.PORT"));
+		 
+		 model.addAttribute("orderServiceURL", OrderUrl);
+		 model.addAttribute("orderServicePORT", OrderPort);
+		 
 		return "home";
 	}
 	
@@ -126,6 +154,9 @@ public class loginControllers {
 				userPhone=acc.getPhone();
 				
 				 model.addAttribute("userList", acc.getname());
+				 
+				 
+				 
 				System.out.println("Name="+acc.getname());
 				
 				logger.info(userName+" logged in successfully");

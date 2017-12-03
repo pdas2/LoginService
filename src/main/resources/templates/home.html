@@ -41,23 +41,33 @@
             
              var offerid=document.getElementById("offerid").value; 
              
+             var orderServiceURL=document.getElementById("orderServiceURL").value; 
+             var orderServicePORT=document.getElementById("orderServicePORT").value; 
              
              var JSONObject= {"userPhone":userPhone, "userName":userName, "userAccId":userAccId, "offerid":offerid};
              var jsonData = JSON.stringify( JSONObject );
-               
+             
+             var orderURL="http://"+orderServiceURL+":"+orderServicePORT+"/offer/addOffer";
+              
              $.ajax({
-                 url: "http://168.1.141.221:31374/offer/addOffer",
+                
+            	 //url: "http://168.1.141.221:31873/offer/addOffer",
+            	 url: orderURL,
+            	  
                  type: "POST",
                  crossDomain: true,
                  dataType: "json",                  
                  data: jsonData,
                  contentType: "application/json",
                  success: function(response){
+                	 
+                	 
                     //alert(JSON.stringify(response));
                 	 window.location="/success.html";
                  },
                  error: function(err){
                     //alert(JSON.stringify(err));
+                    
                 	 window.location="/success.html";
                  }
             });     
@@ -89,6 +99,8 @@
 <input type="hidden" size="25" name="userName" id="userName" th:value="${userName}"/>
 <input type="hidden" size="25" name="userAccId" id="userAccId" th:value="${userAccId}"/>
 <input type="hidden" size="25" name="userPhone" id="userPhone" th:value="${userPhone}"/>
+<input type="hidden" size="25" name="orderServiceURL" id="orderServiceURL" th:value="${orderServiceURL}"/>
+<input type="hidden" size="25" name="orderServicePORT" id="orderServicePORT" th:value="${orderServicePORT}"/>
 
 <select name="offerid" id="offerid">
 <option value="data2gb">Plan 2GB</option>
