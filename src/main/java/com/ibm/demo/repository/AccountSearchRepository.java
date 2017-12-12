@@ -7,8 +7,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import com.ibm.demo.model.Account;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +26,13 @@ import org.springframework.data.mongodb.core.query.Query;
 //import com.ibm.demo.config.SpringMongoConfig;
 
 @Repository
+@Service
 public class AccountSearchRepository {
 
 	@Autowired
 	MongoTemplate mongoTemplate;
 	
+	@HystrixCommand(fallbackMethod = "failService")
 	public Account searchuid(String userid,String password) {
 		/*
 		System.out.println("uid="+userid);
@@ -80,4 +84,9 @@ else
 	return null;
 }
 	}
+	
+	private Account failService(String userid,String password) {
+        return null;
+    }
+	
 }
