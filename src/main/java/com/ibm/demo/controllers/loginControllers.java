@@ -30,6 +30,7 @@ import com.ibm.demo.repository.offerMongoRepository;
 import com.ibm.demo.repository.offerMongoRepository;
 import com.ibm.demo.repository.AccountRepository;
 import com.ibm.demo.properties.*;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,7 @@ public class loginControllers {
     private OrderProperties orderProperties;
 	*/
     
+    @NewSpan
 	@RequestMapping("/home")
 	public String home1(Model model) {
 		
@@ -90,7 +92,7 @@ public class loginControllers {
 		return "home";
 	}
 	
-	
+	@NewSpan
 	@RequestMapping("/login" )
 	public String home(Model model) {
 		
@@ -98,6 +100,7 @@ public class loginControllers {
 		return "login";
 	}
 	
+	@NewSpan
 	@RequestMapping("/success" )
 	public String home2(Model model) {
 		
@@ -106,6 +109,7 @@ public class loginControllers {
 		model.addAttribute("userList2", "Account would be updated shortly" );
 		return "success";
 	}
+	
 	
 	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
 	public String addOffer(@ModelAttribute offerService offer) {
@@ -127,6 +131,7 @@ public class loginControllers {
 	}
 	
 	
+	@NewSpan
 	 @RequestMapping(value = "/login" , method = RequestMethod.POST )
 	    public String loginSubmit(Model model, @RequestParam String userid,@RequestParam String password) {
 		 // model.addAttribute("userList", accountSearchRepository.searchuid(userid,password));
