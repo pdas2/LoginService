@@ -10,9 +10,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableMongoRepositories("com.ibm.demo.repository")
-@EnableDiscoveryClient
-@EnableCircuitBreaker
-@EnableHystrix
+//@EnableDiscoveryClient
+//@EnableCircuitBreaker
+//@EnableHystrix
 @EnableCaching
 public class MobileLoginApplication {
 
