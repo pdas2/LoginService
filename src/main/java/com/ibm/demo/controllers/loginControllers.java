@@ -138,7 +138,8 @@ public class loginControllers {
 		String response = restTemplate.postForObject(Url, httpEntity, String.class);
 
 		JSONObject jsonObj = new JSONObject(response);
-		String data = jsonObj.get("data").toString();  
+		String data = jsonObj.get("data").toString(); 
+		System.out.println(data);
 		
 		return "redirect:success";
 	}
