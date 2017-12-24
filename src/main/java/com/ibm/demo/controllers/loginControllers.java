@@ -121,7 +121,7 @@ public class loginControllers {
 	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
 	public String addOffer(@ModelAttribute offerService offer) throws JSONException 
 	{
-		String Url = "http://168.1.141.221:31873/offer/addOffer";
+		String Url = "http://"+OrderUrl+":"+OrderPort+"/offer/addOffer";
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("Content-Type", "application/json");
