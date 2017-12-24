@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,13 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+
 import com.ibm.demo.model.Account;
 import com.ibm.demo.model.offerService;
 import com.ibm.demo.producer.Producer;
@@ -31,7 +36,9 @@ import com.ibm.demo.repository.offerMongoRepository;
 import com.ibm.demo.repository.AccountRepository;
 import com.ibm.demo.properties.*;
 import org.springframework.cloud.sleuth.annotation.NewSpan;
-
+import org.apache.http.HttpStatus;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,6 +119,33 @@ public class loginControllers {
 	
 	
 	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
+	public String addOffer(@ModelAttribute offerService offer) throws JSONException 
+	{
+		String Url = "http://168.1.141.221:31873/offer/addOffer";
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Content-Type", "application/json");
+
+		JSONObject json = new JSONObject();
+		json.put("userPhone",offer.getuserPhone());
+		json.put("userName",offer.getuserName());
+		json.put("userAccId",offer.getuserAccId());
+		json.put("offerid",offer.getofferid());
+
+		HttpEntity <String> httpEntity = new HttpEntity <String> (json.toString(), httpHeaders);
+
+		RestTemplate restTemplate = new RestTemplate();
+		String response = restTemplate.postForObject(Url, httpEntity, String.class);
+
+		JSONObject jsonObj = new JSONObject(response);
+		String data = jsonObj.get("data").toString();  
+		
+		return "redirect:success";
+	}
+	
+	
+	/*
+	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
 	public String addOffer(@ModelAttribute offerService offer) {
 		
 		String msg="Offer successfully ordered to Account No."+offer.getuserAccId();
@@ -129,7 +163,7 @@ public class loginControllers {
 		return "redirect:success";
 		//returns "Offer will be activated within 24 hrs for User: "+offer.getuserName();
 	}
-	
+	*/
 	
 	@NewSpan
 	 @RequestMapping(value = "/login" , method = RequestMethod.POST )
