@@ -32,6 +32,7 @@ import com.ibm.demo.model.offerService;
 import com.ibm.demo.producer.Producer;
 import com.ibm.demo.repository.AccountSearchRepository;
 import com.ibm.demo.repository.offerMongoRepository;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.ibm.demo.repository.offerMongoRepository;
 import com.ibm.demo.repository.AccountRepository;
 import com.ibm.demo.properties.*;
@@ -117,8 +118,19 @@ public class loginControllers {
 		return "success";
 	}
 	
+	@NewSpan
+	@RequestMapping("/failOrder" )
+	public String home3(Model model) {
+		
+		model.addAttribute("userList", "There is an outage in Order Service" );
+		model.addAttribute("userList1", "Please try after some time." );
+		
+		return "failorder";
+	}
 	
+	@NewSpan
 	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
+	@HystrixCommand(fallbackMethod = "failOrderService")
 	public String addOffer(@ModelAttribute offerService offer) throws JSONException 
 	{
 		String Url = "http://"+OrderUrl+":"+OrderPort+"/offer/addOffer";
@@ -144,7 +156,10 @@ public class loginControllers {
 		return "redirect:success";
 	}
 	
-	
+	private String failOrderService()
+	{
+        return "redirect:failOrder";
+    }
 	/*
 	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
 	public String addOffer(@ModelAttribute offerService offer) {
