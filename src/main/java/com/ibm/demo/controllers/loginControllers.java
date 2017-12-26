@@ -1,9 +1,11 @@
 package com.ibm.demo.controllers;
 
+import com.carrotsearch.ant.tasks.junit4.dependencies.org.simpleframework.xml.Order;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,6 +34,7 @@ import com.ibm.demo.model.offerService;
 import com.ibm.demo.producer.Producer;
 import com.ibm.demo.repository.AccountSearchRepository;
 import com.ibm.demo.repository.offerMongoRepository;
+import com.ibm.demo.repository.orderCheckService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.ibm.demo.repository.offerMongoRepository;
 import com.ibm.demo.repository.AccountRepository;
@@ -44,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Controller
+
 public class loginControllers {
 	
 	public static final Logger logger = LoggerFactory.getLogger(loginControllers.class);
@@ -69,6 +73,9 @@ public class loginControllers {
 	offerMongoRepository offerRepository;
 	
 	@Autowired
+	orderCheckService orderservice;
+	
+	@Autowired
 	Producer producer;
 	
     @Autowired
@@ -79,7 +86,7 @@ public class loginControllers {
     private OrderProperties orderProperties;
 	*/
     
-    @NewSpan
+   
 	@RequestMapping("/home")
 	public String home1(Model model) {
 		
@@ -100,7 +107,7 @@ public class loginControllers {
 		return "home";
 	}
 	
-	@NewSpan
+	
 	@RequestMapping("/login" )
 	public String home(Model model) {
 		
@@ -108,7 +115,7 @@ public class loginControllers {
 		return "login";
 	}
 	
-	@NewSpan
+	
 	@RequestMapping("/success" )
 	public String home2(Model model) {
 		
@@ -118,23 +125,50 @@ public class loginControllers {
 		return "success";
 	}
 	
-	@NewSpan
+
 	@RequestMapping("/failOrder" )
 	public String home3(Model model) {
 		
-		model.addAttribute("userList", "There is an outage in Order Service" );
-		model.addAttribute("userList1", "Please try after some time." );
+		model.addAttribute("userList", "No Response From Order Service at this moment." );
+		model.addAttribute("userList1", "Service will be back shortly." );
 		
 		return "failorder";
 	}
 	
 	@NewSpan
 	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
-	@HystrixCommand(fallbackMethod = "failOrderService")
+	
 	public String addOffer(@ModelAttribute offerService offer) throws JSONException 
 	{
 		String Url = "http://"+OrderUrl+":"+OrderPort+"/offer/addOffer";
+         
+		String data=orderservice.callOrder(offer,Url);
+		/*
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.set("Content-Type", "application/json");
 
+		JSONObject json = new JSONObject();
+		json.put("userPhone",offer.getuserPhone());
+		json.put("userName",offer.getuserName());
+		json.put("userAccId",offer.getuserAccId());
+		json.put("offerid",offer.getofferid());
+
+		HttpEntity <String> httpEntity = new HttpEntity <String> (json.toString(), httpHeaders);
+
+		RestTemplate restTemplate = new RestTemplate();
+		String response = restTemplate.postForObject(Url, httpEntity, String.class);
+
+		JSONObject jsonObj = new JSONObject(response);
+		String data = jsonObj.get("data").toString(); 
+		System.out.println(data);
+		*/
+		//return "redirect:success";
+		return data;
+	}
+	/*
+	@HystrixCommand(fallbackMethod = "failOrderService")
+	public String callOrder(offerService offer, String Url) throws JSONException
+	{
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.set("Content-Type", "application/json");
 
@@ -153,13 +187,14 @@ public class loginControllers {
 		String data = jsonObj.get("data").toString(); 
 		System.out.println(data);
 		
-		return "redirect:success";
+		return data;
 	}
 	
 	private String failOrderService()
 	{
         return "redirect:failOrder";
     }
+    */
 	/*
 	@RequestMapping(value = "/addOffer", method = RequestMethod.POST)
 	public String addOffer(@ModelAttribute offerService offer) {
