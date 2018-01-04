@@ -38,7 +38,7 @@ public class orderCheckService
 		return "redirect:success";
 	}
 	
-	private String failOrderService()
+	private String failOrderService(offerService offer, String Url)
 	{
         return "redirect:failOrder";
     }
