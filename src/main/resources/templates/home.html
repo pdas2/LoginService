@@ -24,6 +24,7 @@
 
  
 <body>
+
 <script type="text/javascript">
  $(document).ready(function(){   
 	 
@@ -51,7 +52,7 @@
               
              $.ajax({
                 
-            	 url: "http://168.1.141.221:31873/offer/addOffer",
+            	 url: "http://9.193.198.185:32446/offer/addOffer",
                  type: "POST",
                  crossDomain: true,
                  dataType: "json",                  
@@ -80,8 +81,9 @@
 <br/>
 <table width="20%" bgcolor="fdecad" align="center" style="font-family:arial;">
 <!--  <form  id="myform">-->
+ <form  id="myform" name="myform" method="post" action="/addOffer"> 
 
-<form  id="myform" name="myform" method="post" action="/addOffer">
+
 <tr>
 <td colspan="2"><font size="4"><b>Welcome !!!</b></font></td>
 
