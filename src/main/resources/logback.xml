@@ -9,7 +9,7 @@
 
 	<appender name="STASH"
 		class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-		<destination>10.1.95.112:4560</destination>
+		<destination>100.96.1.13:4560</destination>
 		<!--  <destination>172.30.203.24:4560</destination>-->
 
 		<encoder
